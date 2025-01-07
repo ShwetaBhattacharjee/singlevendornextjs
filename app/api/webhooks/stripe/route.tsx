@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-
-import { sendPurchaseReceipt } from "@/emails";
 import Order from "@/lib/db/models/order.model";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
@@ -10,6 +8,7 @@ export async function POST(req: NextRequest) {
   let event: Stripe.Event;
 
   try {
+    // Verify the Stripe webhook signature
     event = stripe.webhooks.constructEvent(
       await req.text(),
       req.headers.get("stripe-signature") as string,
@@ -55,15 +54,7 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
     };
 
     await order.save();
-
-    // Send purchase receipt email
-    /*try {
-      await sendPurchaseReceipt({ order });
-    } catch (err) {
-      console.error("Failed to send email receipt:", err);
-    }*/
-
-    console.log("Order updated and receipt sent:", orderId);
+    console.log("Order updated successfully:", orderId);
   } else {
     console.log(`Unhandled event type: ${type}`);
   }
