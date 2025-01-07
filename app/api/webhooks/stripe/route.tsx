@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     process.env.STRIPE_WEBHOOK_SECRET as string
   );
 
-  if (event.type === "charge.succeeded") {
+  if (event.type === "succeeded") {
     const charge = event.data.object;
     const orderId = charge.metadata.orderId;
     const email = charge.billing_details.email;
