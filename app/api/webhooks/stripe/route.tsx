@@ -13,8 +13,15 @@ export async function POST(req: NextRequest) {
     process.env.STRIPE_WEBHOOK_SECRET as string
   );
 
-  if (event.type === "succeeded") {
-    const charge = event.data.object;
+  // Acknowledge Stripe immediately
+  const { type, data } = event;
+  processEventAsync(type, data); // Offload actual processing
+  return new NextResponse("Received", { status: 200 });
+}
+
+async function processEventAsync(type: string, data: any) {
+  if (type === "charge.succeeded") {
+    const charge = data.object;
     const orderId = charge.metadata.orderId;
     const email = charge.billing_details.email;
     const pricePaidInCents = charge.amount;
@@ -43,3 +50,10 @@ export async function POST(req: NextRequest) {
   }
   return new NextResponse();
 }
+
+/*export async function POST(req: NextRequest) {
+  const event = await stripe.webhooks.constructEvent(
+    await req.text(),
+    req.headers.get("stripe-signature") as string,
+    process.env.STRIPE_WEBHOOK_SECRET as string
+  );*/
