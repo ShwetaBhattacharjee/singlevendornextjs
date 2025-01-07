@@ -8,7 +8,7 @@ import { FormEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import ProductPrice from "@/components/shared/product/product-price";
-import { SERVER_URL } from "@/lib/constants";
+import useSettingStore from "@/hooks/use-setting-store";
 
 export default function StripeForm({
   priceInCents,
@@ -17,6 +17,10 @@ export default function StripeForm({
   priceInCents: number;
   orderId: string;
 }) {
+  const {
+    setting: { site },
+  } = useSettingStore();
+
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +37,7 @@ export default function StripeForm({
       .confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${SERVER_URL}/checkout/${orderId}/stripe-payment-success`,
+          return_url: `${site.url}/checkout/${orderId}/stripe-payment-success`,
         },
       })
       .then(({ error }) => {
