@@ -30,14 +30,21 @@ export async function POST(req: NextRequest) {
 
 async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   if (type === "charge.succeeded") {
-    const charge = data as Stripe.Charge;
-    console.log("Full Charge Object:", charge);
-    console.log("Charge ID:", charge.id); // Add this log to verify charge ID
-    console.log("Charge metadata:", charge.metadata); // Log metadata for further inspection
+    console.log("Received Event Data:", data); // Log the entire event data to inspect structure
+
+    const charge = data as Stripe.Charge; // Ensure it's being casted correctly to Stripe.Charge
+    console.log("Charge Object:", charge); // Full charge object to inspect
+
+    if (charge && charge.metadata) {
+      console.log("Charge metadata:", charge.metadata);
+      console.log("Charge ID:", charge.id);
+    } else {
+      console.error("Charge object or metadata is missing");
+    }
 
     const metadata: Record<string, string> = charge.metadata || {};
     if (!metadata.orderId) {
-      console.error("Order ID missing in metadata. Charge ID:", charge.id); // Correct the log to use charge.id
+      console.error("Order ID missing in metadata. Charge ID:", charge.id);
       return;
     }
 
