@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-
 import { sendPurchaseReceipt } from "@/emails";
 import Order from "@/lib/db/models/order.model";
 
@@ -24,7 +23,6 @@ export async function POST(req: NextRequest) {
 
   console.log("Webhook received:", event.type);
 
-  // Acknowledge Stripe immediately
   const { type, data } = event;
   processEventAsync(type, data); // Offload to async processing
   return new NextResponse("Received", { status: 200 });
@@ -32,52 +30,38 @@ export async function POST(req: NextRequest) {
 
 async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   if (type === "charge.succeeded") {
-    const charge = data as Stripe.Charge; // Cast to Stripe.Charge
+    const charge = data as Stripe.Charge;
     console.log("Full Charge Object:", charge);
 
-    // Extract metadata with proper typing
-    const metadata: Record<string, string> =
-      (charge.metadata as Record<string, string>) || {};
-    console.log("Charge Metadata:", metadata);
-
-    const orderId = metadata.orderId; // Safely access orderId
-    const email = charge.billing_details?.email;
-    const pricePaidInCents = charge.amount;
-
-    if (!orderId) {
-      console.error("Order ID not found in metadata.");
+    const metadata: Record<string, string> = charge.metadata || {};
+    if (!metadata.orderId) {
+      console.error("Order ID missing in metadata. Charge ID:", charge.id);
       return;
     }
 
+    const orderId = metadata.orderId;
     try {
       const order = await Order.findById(orderId).populate("user");
       if (!order) {
-        console.error("Order not found:", orderId);
+        console.error("Order not found for ID:", orderId);
         return;
       }
 
-      // Update order status
       order.isPaid = true;
       order.paidAt = new Date();
       order.paymentResult = {
         id: charge.id,
         status: "COMPLETED",
-        email_address: email || "No email provided",
-        pricePaid: (pricePaidInCents / 100).toFixed(2),
+        email_address: charge.billing_details?.email || "No email provided",
+        pricePaid: (charge.amount / 100).toFixed(2),
       };
 
       await order.save();
-      console.log("Order updated:", order);
+      console.log("Order updated successfully:", orderId);
 
-      // Send purchase receipt email
-      try {
-        await sendPurchaseReceipt({ order });
-        console.log("Order updated and receipt sent:", orderId);
-      } catch (emailError) {
-        console.error("Failed to send email receipt:", emailError);
-      }
-    } catch (dbError) {
-      console.error("Database operation failed:", dbError);
+      await sendPurchaseReceipt({ order });
+    } catch (error) {
+      console.error("Error processing charge.succeeded:", error);
     }
   } else {
     console.log(`Unhandled event type: ${type}`);
