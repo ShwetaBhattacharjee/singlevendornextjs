@@ -1,10 +1,10 @@
-import { IOrderInput } from '@/types';
-import { Document, Model, model, models, Schema } from 'mongoose';
+import { IOrderInput } from '@/types'
+import { Document, Model, model, models, Schema } from 'mongoose'
 
 export interface IOrder extends Document, IOrderInput {
-  _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  _id: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 const orderSchema = new Schema<IOrder>(
@@ -44,11 +44,7 @@ const orderSchema = new Schema<IOrder>(
     },
     expectedDeliveryDate: { type: Date, required: true },
     paymentMethod: { type: String, required: true },
-    paymentResult: {
-      id: { type: String },
-      status: { type: String },
-      email_address: { type: String },
-    },
+    paymentResult: { id: String, status: String, email_address: String },
     itemsPrice: { type: Number, required: true },
     shippingPrice: { type: Number, required: true },
     taxPrice: { type: Number, required: true },
@@ -57,20 +53,14 @@ const orderSchema = new Schema<IOrder>(
     paidAt: { type: Date },
     isDelivered: { type: Boolean, required: true, default: false },
     deliveredAt: { type: Date },
-    // Add metadata for tracking payment-related details
-    paymentMetadata: {
-      stripeChargeId: { type: String }, // Store Stripe charge ID
-      stripePaymentIntentId: { type: String }, // Store Stripe payment intent ID
-      stripeBalanceTransactionId: { type: String }, // Store balance transaction ID
-    },
     createdAt: { type: Date, default: Date.now },
   },
   {
     timestamps: true,
   }
-);
+)
 
 const Order =
-  (models.Order as Model<IOrder>) || model<IOrder>('Order', orderSchema);
+  (models.Order as Model<IOrder>) || model<IOrder>('Order', orderSchema)
 
-export default Order;
+export default Order
