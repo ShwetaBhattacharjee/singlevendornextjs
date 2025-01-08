@@ -50,7 +50,7 @@ async function processEventAsync(type: string, data: Stripe.Event.Data) {
       }
 
       // Log the current order before updating
-      console.log("Current order data:", order);
+      console.error("Current order data:", order);
 
       // Update the order details
       order.isPaid = true;
@@ -64,10 +64,10 @@ async function processEventAsync(type: string, data: Stripe.Event.Data) {
 
       // Save the updated order and check for errors
       const updatedOrder = await order.save();
-      console.log("Order updated successfully:", updatedOrder);
+      console.error("Order updated successfully:", updatedOrder);
 
       // Log the updated order data to verify if isPaid was updated
-      console.log("Updated order data:", updatedOrder);
+      console.error("Updated order data:", updatedOrder);
 
       // Send purchase receipt email
       await sendPurchaseReceipt({ order });
