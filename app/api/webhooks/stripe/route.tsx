@@ -35,7 +35,7 @@ async function processEventAsync(type: string, data: Stripe.Event.Data) {
     // Ensure metadata exists and extract the orderId
     const metadata: Record<string, string> = charge.metadata || {};
     const orderId = metadata.orderId;
-
+    console.log("Order ID:", orderId);
     if (!orderId) {
       console.error("Order ID missing in metadata. Charge ID:", charge.id);
       return;
