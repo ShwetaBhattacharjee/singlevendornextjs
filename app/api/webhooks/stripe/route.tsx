@@ -1,33 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
-import { sendPurchaseReceipt } from "@/emails";
-import Order from "@/lib/db/models/order.model"; // Make sure this is your Order model
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2024-12-18.acacia",
-});
-
-export async function POST(req: NextRequest) {
-  let event: Stripe.Event;
-
-  try {
-    event = stripe.webhooks.constructEvent(
-      await req.text(),
-      req.headers.get("stripe-signature") as string,
-      process.env.STRIPE_WEBHOOK_SECRET as string
-    );
-  } catch (err) {
-    console.error("Webhook signature verification failed:", err);
-    return new NextResponse("Webhook Error", { status: 400 });
-  }
-
-  console.log("Webhook received:", event.type);
-
-  const { type, data } = event;
-  processEventAsync(type, data); // Offload to async processing
-  return new NextResponse("Received", { status: 200 });
-}
-
 async function processEventAsync(type: string, data: Stripe.Event.Data) {
   if (type === "charge.succeeded") {
     const charge = data.object as Stripe.Charge; // Cast to Stripe.Charge object
@@ -49,6 +19,11 @@ async function processEventAsync(type: string, data: Stripe.Event.Data) {
         return;
       }
 
+      console.log("Order found:", orderId); // Log to confirm the order is found
+
+      // Check the current value of isPaid before updating
+      console.log("Current isPaid status:", order.isPaid);
+
       // Update the order details
       order.isPaid = true;
       order.paidAt = new Date(); // Set payment date
@@ -59,9 +34,13 @@ async function processEventAsync(type: string, data: Stripe.Event.Data) {
         pricePaid: (charge.amount / 100).toFixed(2), // Convert to dollars
       };
 
-      // Save the updated order
+      // Save the updated order and check the result
       await order.save();
       console.log("Order updated successfully:", orderId);
+
+      // Log the updated status to verify if isPaid was updated
+      const updatedOrder = await Order.findById(orderId);
+      console.log("Updated isPaid status:", updatedOrder?.isPaid);
 
       // Send purchase receipt email
       await sendPurchaseReceipt({ order });
