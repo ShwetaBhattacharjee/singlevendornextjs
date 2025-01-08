@@ -28,9 +28,9 @@ export async function POST(req: NextRequest) {
   return new NextResponse("Received", { status: 200 });
 }
 
-async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
+async function processEventAsync(type: string, data: Stripe.Event.Data) {
   if (type === "charge.succeeded") {
-    const charge = data.object as Stripe.Charge; // Access charge object correctly
+    const charge = data.object as Stripe.Charge; // Ensure the object is typed as Stripe.Charge
 
     // Ensure metadata exists and extract the orderId
     const metadata: Record<string, string> = charge.metadata || {};
