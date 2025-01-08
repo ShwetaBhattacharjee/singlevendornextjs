@@ -29,8 +29,10 @@ export async function POST(req: NextRequest) {
 async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   if (type === "charge.succeeded") {
     const charge = data as Stripe.Charge;
-    const orderId = charge.metadata.orderId;
-    const email = charge.billing_details.email;
+    const meta = charge.metadata as Stripe.Metadata;
+    const orderId = meta.orderId;
+    const bill = charge.billing_details as Stripe.Charge.BillingDetails;
+    const email = bill.email;
     const pricePaidInCents = charge.amount;
 
     if (!orderId) {
@@ -38,7 +40,7 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
       return;
     }
 
-    const order = await Order.findById(orderId).populate("user");
+    const order = await Order.findById(orderId).populate("user email");
     if (!order) {
       console.error("Order not found:", orderId);
       return;
