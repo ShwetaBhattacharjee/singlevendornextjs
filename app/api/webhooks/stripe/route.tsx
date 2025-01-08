@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { sendPurchaseReceipt } from "@/emails";
-import Order from "@/lib/db/models/order.model"; // Make sure this is your Order model
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2024-12-18.acacia",
-});
+import { sendPurchaseReceipt } from "@/emails";
+import Order from "@/lib/db/models/order.model";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 export async function POST(req: NextRequest) {
   let event: Stripe.Event;
@@ -21,59 +20,50 @@ export async function POST(req: NextRequest) {
     return new NextResponse("Webhook Error", { status: 400 });
   }
 
-  console.log("Webhook received:", event.type);
-
+  // Acknowledge Stripe immediately
   const { type, data } = event;
-  processEventAsync(type, data); // Offload to async processing
+  processEventAsync(type, data); // Offload actual processing
   return new NextResponse("Received", { status: 200 });
 }
 
-async function processEventAsync(type: string, data: Stripe.Event.Data) {
+async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   if (type === "charge.succeeded") {
-    const charge = data.object as Stripe.Charge; // Cast to Stripe.Charge object
-
-    // Extract orderId from charge metadata
-    const metadata: Record<string, string> = charge.metadata || {};
-    const orderId = metadata.orderId;
+    const charge = data as Stripe.Charge;
+    const orderId = charge.metadata?.orderId;
+    const email = charge.billing_details.email;
+    const pricePaidInCents = charge.amount;
 
     if (!orderId) {
-      console.error("Order ID missing in metadata. Charge ID:", charge.id);
+      console.error("Order ID not found in metadata.");
       return;
     }
 
-    try {
-      // Find the order in your database using the orderId
-      const order = await Order.findById(orderId).populate("user");
-      if (!order) {
-        console.error("Order not found for ID:", orderId);
-        return;
-      }
-
-      // Log the current order before updating
-      console.error("Current order data:", order);
-
-      // Update the order details
-      order.isPaid = true;
-      order.paidAt = new Date(); // Set payment date
-      order.paymentResult = {
-        id: charge.id,
-        status: "COMPLETED",
-        email_address: charge.billing_details?.email || "No email provided",
-        pricePaid: (charge.amount / 100).toFixed(2), // Convert to dollars
-      };
-
-      // Save the updated order and check for errors
-      const updatedOrder = await order.save();
-      console.error("Order updated successfully:", updatedOrder);
-
-      // Log the updated order data to verify if isPaid was updated
-      console.error("Updated order data:", updatedOrder);
-
-      // Send purchase receipt email
-      await sendPurchaseReceipt({ order });
-    } catch (error) {
-      console.error("Error processing charge.succeeded:", error);
+    const order = await Order.findById(orderId).lean().populate("user");
+    if (!order) {
+      console.error("Order not found:", orderId);
+      return;
     }
+
+    // Update order status
+    order.isPaid = true;
+    order.paidAt = new Date();
+    order.paymentResult = {
+      id: charge.id,
+      status: "COMPLETED",
+      email_address: email || "No email provided",
+      pricePaid: (pricePaidInCents / 100).toFixed(2),
+    };
+
+    await order.save();
+
+    // Send purchase receipt email
+    try {
+      await sendPurchaseReceipt({ order });
+    } catch (err) {
+      console.error("Failed to send email receipt:", err);
+    }
+
+    console.log("Order updated and receipt sent:", orderId);
   } else {
     console.log(`Unhandled event type: ${type}`);
   }
