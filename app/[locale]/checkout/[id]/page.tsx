@@ -9,8 +9,15 @@ export const metadata = {
   title: "Payment",
 };
 
-const CheckoutPaymentPage = async ({ params }: { params: { id: string } }) => {
-  const { id } = params;
+const CheckoutPaymentPage = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
+  // Resolve the promise
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
+
   const order = await getOrderById(id);
   if (!order) notFound();
 
