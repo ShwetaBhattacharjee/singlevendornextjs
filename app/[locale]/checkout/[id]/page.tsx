@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import React from "react";
+
 import { auth } from "@/auth";
 import { getOrderById } from "@/lib/actions/order.actions";
 import PaymentForm from "./payment-form";
@@ -9,31 +10,30 @@ export const metadata = {
   title: "Payment",
 };
 
-const CheckoutPaymentPage = async ({
-  params,
-}: {
-  params: Promise<{ id: string }>;
+const CheckoutPaymentPage = async (props: {
+  params: Promise<{
+    id: string;
+  }>;
 }) => {
-  const { id } = await params; // Await the params promise
+  const params = await props.params;
+
+  const { id } = params;
 
   const order = await getOrderById(id);
   if (!order) notFound();
 
   const session = await auth();
+
   let client_secret = null;
-
   if (order.paymentMethod === "Stripe" && !order.isPaid) {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-      apiVersion: "2024-12-18.acacia",
-    });
-
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(order.totalPrice * 100),
       currency: "USD",
-      metadata: { orderId: order._id.toString() },
+      metadata: { orderId: order._id.toString() }, // Ensure _id is converted to a string
     });
-
     console.log("Metadata sent to Stripe:", { orderId: order._id.toString() });
+
     client_secret = paymentIntent.client_secret;
   }
 
@@ -42,7 +42,7 @@ const CheckoutPaymentPage = async ({
       order={order}
       paypalClientId={process.env.PAYPAL_CLIENT_ID || "sb"}
       clientSecret={client_secret}
-      isAdmin={session?.user?.role === "Admin"}
+      isAdmin={session?.user?.role === "Admin" || false}
     />
   );
 };
