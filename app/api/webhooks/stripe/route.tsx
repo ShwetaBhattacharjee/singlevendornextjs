@@ -4,7 +4,9 @@ import Stripe from "stripe";
 import { sendPurchaseReceipt } from "@/emails";
 import Order from "@/lib/db/models/order.model";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: "2024-12-18.acacia",
+});
 
 export async function POST(req: NextRequest) {
   let event: Stripe.Event;
@@ -20,17 +22,19 @@ export async function POST(req: NextRequest) {
     return new NextResponse("Webhook Error", { status: 400 });
   }
 
+  // Log the event type for debugging
+  console.log("Webhook received:", event.type);
+
   // Acknowledge Stripe immediately
   const { type, data } = event;
-  processEventAsync(type, data); // Offload actual processing
+  processEventAsync(type, data); // Offload to async processing
   return new NextResponse("Received", { status: 200 });
 }
-
 async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   if (type === "charge.succeeded") {
     const charge = data as Stripe.Charge;
     const orderId = charge.metadata?.orderId;
-    const email = charge.billing_details.email;
+    const email = charge.billing_details?.email;
     const pricePaidInCents = charge.amount;
 
     if (!orderId) {
@@ -38,32 +42,35 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
       return;
     }
 
-    const order = await Order.findById(orderId).lean().populate("user");
-    if (!order) {
-      console.error("Order not found:", orderId);
-      return;
-    }
-
-    // Update order status
-    order.isPaid = true;
-    order.paidAt = new Date();
-    order.paymentResult = {
-      id: charge.id,
-      status: "COMPLETED",
-      email_address: email || "No email provided",
-      pricePaid: (pricePaidInCents / 100).toFixed(2),
-    };
-
-    await order.save();
-
-    // Send purchase receipt email
     try {
-      await sendPurchaseReceipt({ order });
-    } catch (err) {
-      console.error("Failed to send email receipt:", err);
-    }
+      const order = await Order.findById(orderId).populate("user");
+      if (!order) {
+        console.error("Order not found:", orderId);
+        return;
+      }
 
-    console.log("Order updated and receipt sent:", orderId);
+      // Update order status
+      order.isPaid = true;
+      order.paidAt = new Date();
+      order.paymentResult = {
+        id: charge.id,
+        status: "COMPLETED",
+        email_address: email || "No email provided",
+        pricePaid: (pricePaidInCents / 100).toFixed(2),
+      };
+
+      await order.save();
+
+      // Send purchase receipt email
+      try {
+        await sendPurchaseReceipt({ order });
+        console.log("Order updated and receipt sent:", orderId);
+      } catch (emailError) {
+        console.error("Failed to send email receipt:", emailError);
+      }
+    } catch (dbError) {
+      console.error("Database operation failed:", dbError);
+    }
   } else {
     console.log(`Unhandled event type: ${type}`);
   }
