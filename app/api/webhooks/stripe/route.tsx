@@ -36,6 +36,8 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
     const orderId = charge.metadata?.orderId;
     const email = charge.billing_details?.email;
     const pricePaidInCents = charge.amount;
+    console.log("Charge Metadata:", charge.metadata);
+    console.log("Stripe Event Data:", data);
 
     if (!orderId) {
       console.error("Order ID not found in metadata.");
@@ -60,6 +62,7 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
       };
 
       await order.save();
+      console.log("Order updated:", order);
 
       // Send purchase receipt email
       try {
