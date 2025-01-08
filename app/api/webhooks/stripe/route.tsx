@@ -57,11 +57,11 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
     await order.save();
 
     // Send purchase receipt email
-    /*try {
+    try {
       await sendPurchaseReceipt({ order });
     } catch (err) {
       console.error("Failed to send email receipt:", err);
-    }*/
+    }
 
     console.log("Order updated and receipt sent:", orderId);
   } else {
