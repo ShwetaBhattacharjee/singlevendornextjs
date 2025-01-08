@@ -30,12 +30,13 @@ const CheckoutPaymentPage = async (props: {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(order.totalPrice * 100),
       currency: "USD",
-      metadata: { orderId: order._id },
+      metadata: { orderId: order._id }, // Ensure this is being passed correctly
     });
     console.log("Metadata sent to Stripe:", { orderId: order._id });
 
     client_secret = paymentIntent.client_secret;
   }
+
   return (
     <PaymentForm
       order={order}

@@ -22,7 +22,6 @@ export async function POST(req: NextRequest) {
     return new NextResponse("Webhook Error", { status: 400 });
   }
 
-  // Log the event type for debugging
   console.log("Webhook received:", event.type);
 
   // Acknowledge Stripe immediately
@@ -30,12 +29,16 @@ export async function POST(req: NextRequest) {
   processEventAsync(type, data); // Offload to async processing
   return new NextResponse("Received", { status: 200 });
 }
+
 async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   if (type === "charge.succeeded") {
     const charge = data as Stripe.Charge;
+    console.log("Full Charge Object:", charge);
+
     const orderId = charge.metadata?.orderId;
     const email = charge.billing_details?.email;
     const pricePaidInCents = charge.amount;
+
     console.log("Charge Metadata:", charge.metadata);
     console.log("Stripe Event Data:", data);
 
