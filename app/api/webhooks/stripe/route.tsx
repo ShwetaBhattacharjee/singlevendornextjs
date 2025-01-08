@@ -30,7 +30,7 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   if (type === "charge.succeeded") {
     const charge = data as Stripe.Charge;
     const orderId = charge.metadata?.orderId;
-    const email = charge.billing_details.email;
+    const email = "christinajessy111@gmail.com"; // = charge.billing_details.email;
     const pricePaidInCents = charge.amount;
 
     if (!orderId) {
