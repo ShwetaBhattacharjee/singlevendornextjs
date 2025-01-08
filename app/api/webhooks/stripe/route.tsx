@@ -32,13 +32,12 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   if (type === "charge.succeeded") {
     const charge = data as Stripe.Charge;
     console.log("Full Charge Object:", charge);
+    console.log("Charge ID:", charge.id); // Add this log to verify charge ID
+    console.log("Charge metadata:", charge.metadata); // Log metadata for further inspection
 
-    // Enhanced logging to inspect metadata
     const metadata: Record<string, string> = charge.metadata || {};
-    console.log("Charge metadata:", metadata);
-
     if (!metadata.orderId) {
-      console.error("Order ID missing in metadata. Charge ID:", charge.id);
+      console.error("Order ID missing in metadata. Charge ID:", charge.id); // Correct the log to use charge.id
       return;
     }
 
