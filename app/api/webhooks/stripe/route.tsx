@@ -33,7 +33,10 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
     const charge = data as Stripe.Charge;
     console.log("Full Charge Object:", charge);
 
+    // Enhanced logging to inspect metadata
     const metadata: Record<string, string> = charge.metadata || {};
+    console.log("Charge metadata:", metadata);
+
     if (!metadata.orderId) {
       console.error("Order ID missing in metadata. Charge ID:", charge.id);
       return;

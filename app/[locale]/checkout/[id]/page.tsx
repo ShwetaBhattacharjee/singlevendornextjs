@@ -30,7 +30,7 @@ const CheckoutPaymentPage = async ({
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(order.totalPrice * 100),
       currency: "USD",
-      metadata: { orderId: order._id.toString() },
+      metadata: { orderId: order._id.toString() }, // Ensure this is set properly
     });
 
     console.log("Metadata sent to Stripe:", { orderId: order._id.toString() });
