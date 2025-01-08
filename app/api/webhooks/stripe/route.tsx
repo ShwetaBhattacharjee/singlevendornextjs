@@ -49,8 +49,8 @@ async function processEventAsync(type: string, data: Stripe.Event.Data) {
         return;
       }
 
-      // Check the current value of isPaid before updating
-      console.log("Current isPaid status:", order.isPaid);
+      // Log the current order before updating
+      console.log("Current order data:", order);
 
       // Update the order details
       order.isPaid = true;
@@ -62,12 +62,12 @@ async function processEventAsync(type: string, data: Stripe.Event.Data) {
         pricePaid: (charge.amount / 100).toFixed(2), // Convert to dollars
       };
 
-      // Save the updated order and check the result
+      // Save the updated order and check for errors
       const updatedOrder = await order.save();
       console.log("Order updated successfully:", updatedOrder);
 
-      // Log the updated status to verify if isPaid was updated
-      console.log("Updated isPaid status:", updatedOrder.isPaid);
+      // Log the updated order data to verify if isPaid was updated
+      console.log("Updated order data:", updatedOrder);
 
       // Send purchase receipt email
       await sendPurchaseReceipt({ order });
