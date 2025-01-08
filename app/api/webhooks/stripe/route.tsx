@@ -49,8 +49,6 @@ async function processEventAsync(type: string, data: Stripe.Event.Data) {
         return;
       }
 
-      console.log("Order found:", orderId); // Log to confirm the order is found
-
       // Check the current value of isPaid before updating
       console.log("Current isPaid status:", order.isPaid);
 
@@ -65,12 +63,11 @@ async function processEventAsync(type: string, data: Stripe.Event.Data) {
       };
 
       // Save the updated order and check the result
-      await order.save();
-      console.log("Order updated successfully:", orderId);
+      const updatedOrder = await order.save();
+      console.log("Order updated successfully:", updatedOrder);
 
       // Log the updated status to verify if isPaid was updated
-      const updatedOrder = await Order.findById(orderId);
-      console.log("Updated isPaid status:", updatedOrder?.isPaid);
+      console.log("Updated isPaid status:", updatedOrder.isPaid);
 
       // Send purchase receipt email
       await sendPurchaseReceipt({ order });
