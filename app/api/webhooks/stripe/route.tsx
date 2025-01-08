@@ -20,17 +20,17 @@ export async function POST(req: NextRequest) {
     return new NextResponse("Webhook Error", { status: 400 });
   }
 
+  console.log(event);
   // Acknowledge Stripe immediately
-  const { type, data } = event;
-  processEventAsync(type, data); // Offload actual processing
+  processEventAsync(event.type, event.data.object); // Offload actual processing
   return new NextResponse("Received", { status: 200 });
 }
 
 async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   if (type === "charge.succeeded") {
     const charge = data as Stripe.Charge;
-    const orderId = charge.metadata?.orderId;
-    const email = "christinajessy111@gmail.com"; // = charge.billing_details.email;
+    const orderId = charge.metadata.orderId;
+    const email = charge.billing_details.email;
     const pricePaidInCents = charge.amount;
 
     if (!orderId) {
