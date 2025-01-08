@@ -14,9 +14,7 @@ const CheckoutPaymentPage = async ({
 }: {
   params: Promise<{ id: string }>;
 }) => {
-  // Resolve the promise
-  const resolvedParams = await params;
-  const { id } = resolvedParams;
+  const { id } = await params; // Await the params promise
 
   const order = await getOrderById(id);
   if (!order) notFound();
