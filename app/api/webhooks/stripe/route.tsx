@@ -35,8 +35,9 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
     const charge = data as Stripe.Charge; // Cast to Stripe.Charge
     console.log("Full Charge Object:", charge);
 
-    // Extract metadata explicitly
-    const metadata = (charge as any).metadata || {}; // Ensure metadata is extracted even if typing fails
+    // Extract metadata with proper typing
+    const metadata: Record<string, string> =
+      (charge.metadata as Record<string, string>) || {};
     console.log("Charge Metadata:", metadata);
 
     const orderId = metadata.orderId; // Safely access orderId
