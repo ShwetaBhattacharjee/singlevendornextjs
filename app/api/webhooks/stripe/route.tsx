@@ -32,15 +32,16 @@ export async function POST(req: NextRequest) {
 
 async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   if (type === "charge.succeeded") {
-    const charge = data as Stripe.Charge;
+    const charge = data as Stripe.Charge; // Cast to Stripe.Charge
     console.log("Full Charge Object:", charge);
 
-    const orderId = charge.metadata?.orderId;
+    // Extract metadata explicitly
+    const metadata = (charge as any).metadata || {}; // Ensure metadata is extracted even if typing fails
+    console.log("Charge Metadata:", metadata);
+
+    const orderId = metadata.orderId; // Safely access orderId
     const email = charge.billing_details?.email;
     const pricePaidInCents = charge.amount;
-
-    console.log("Charge Metadata:", charge.metadata);
-    console.log("Stripe Event Data:", data);
 
     if (!orderId) {
       console.error("Order ID not found in metadata.");
