@@ -38,7 +38,7 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
       return;
     }
 
-    const order = await Order.findById(orderId).lean().populate("user");
+    const order = await Order.findById(orderId).populate("user");
     if (!order) {
       console.error("Order not found:", orderId);
       return;
@@ -53,11 +53,12 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
       email_address: email || "No email provided",
       pricePaid: (pricePaidInCents / 100).toFixed(2),
     };
-
+    console.log("Before saving");
     await order.save();
 
     // Send purchase receipt email
     try {
+      console.log("Before sending mail");
       await sendPurchaseReceipt({ order });
     } catch (err) {
       console.error("Failed to send email receipt:", err);
