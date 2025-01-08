@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { sendPurchaseReceipt } from "@/emails";
-import Order from "@/lib/db/models/order.model";
+import Order from "@/lib/db/models/order.model"; // Make sure this is your Order model
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2024-12-18.acacia",
@@ -30,12 +30,12 @@ export async function POST(req: NextRequest) {
 
 async function processEventAsync(type: string, data: Stripe.Event.Data) {
   if (type === "charge.succeeded") {
-    const charge = data.object as Stripe.Charge; // Ensure the object is typed as Stripe.Charge
+    const charge = data.object as Stripe.Charge; // Cast to Stripe.Charge object
 
-    // Ensure metadata exists and extract the orderId
+    // Extract orderId from charge metadata
     const metadata: Record<string, string> = charge.metadata || {};
     const orderId = metadata.orderId;
-    console.log("Order ID:", orderId);
+
     if (!orderId) {
       console.error("Order ID missing in metadata. Charge ID:", charge.id);
       return;
@@ -51,12 +51,12 @@ async function processEventAsync(type: string, data: Stripe.Event.Data) {
 
       // Update the order details
       order.isPaid = true;
-      order.paidAt = new Date();
+      order.paidAt = new Date(); // Set payment date
       order.paymentResult = {
         id: charge.id,
         status: "COMPLETED",
         email_address: charge.billing_details?.email || "No email provided",
-        pricePaid: (charge.amount / 100).toFixed(2),
+        pricePaid: (charge.amount / 100).toFixed(2), // Convert to dollars
       };
 
       // Save the updated order
