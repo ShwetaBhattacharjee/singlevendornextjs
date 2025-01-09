@@ -21,68 +21,50 @@ export async function POST(req: NextRequest) {
     return new NextResponse("Webhook Error", { status: 400 });
   }
 
-  console.log("Received event:", event.type);
+  console.log("Received Stripe event:", event.type);
 
   // Acknowledge Stripe immediately
-  processEventAsync(event.type, event.data.object); // Offload processing
+  processEventAsync(event.type, event.data.object);
   return new NextResponse("Received", { status: 200 });
 }
 
 async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   try {
-    // Ensure database connection
     await connectToDatabase();
     console.log("Database connection established.");
 
     if (type === "charge.succeeded") {
       const charge = data as Stripe.Charge;
-      console.log("Charge object:", charge);
-
       const meta = charge.metadata as Stripe.Metadata;
-      console.log("Charge metadata:", meta);
 
-      const orderId = meta.orderId;
+      const orderId = meta?.orderId;
       const email = charge.billing_details?.email || "No email provided";
       const pricePaidInCents = charge.amount;
 
       if (!orderId) {
-        console.error("Order ID not found in metadata.");
+        console.error("Order ID missing in metadata.");
         return;
       }
 
-      const order = await Order.findById(orderId).populate("user email");
+      const order = await Order.findById(orderId);
       if (!order) {
-        console.error("Order not found:", orderId);
+        console.error(`Order not found for ID: ${orderId}`);
         return;
       }
 
-      console.log("Order retrieved:", order);
+      console.log("Updating order:", order);
 
-      // Update order status
       order.isPaid = true;
       order.paidAt = new Date();
-      order.paymentResult = {
-        id: charge.id,
-        status: "COMPLETED",
-        email_address: email,
-        pricePaid: (pricePaidInCents / 100).toFixed(2),
-      };
+
+      await order.save();
+      console.log(`Order updated successfully: ${orderId}`);
 
       try {
-        console.log("Saving order...");
-        await order.save();
-        console.log("Order updated successfully:", orderId);
-      } catch (err) {
-        console.error("Error saving order:", err);
-      }
-
-      // Send purchase receipt email
-      try {
-        console.log("Sending purchase receipt...");
         await sendPurchaseReceipt({ order });
-        console.log("Purchase receipt sent.");
+        console.log("Purchase receipt sent successfully.");
       } catch (err) {
-        console.error("Failed to send email receipt:", err);
+        console.error("Error sending purchase receipt:", err);
       }
     } else {
       console.log(`Unhandled event type: ${type}`);
