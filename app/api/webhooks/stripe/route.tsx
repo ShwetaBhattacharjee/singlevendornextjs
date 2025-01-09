@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     return new NextResponse("Webhook Error", { status: 400 });
   }
 
-  console.error("Received Stripe event:", event.type);
+  console.log("Received Stripe event:", event.type);
 
   // Acknowledge Stripe immediately
   processEventAsync(event.type, event.data.object);
@@ -30,12 +30,15 @@ export async function POST(req: NextRequest) {
 
 async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   try {
+    console.log("Connecting to the database...");
     await connectToDatabase();
-    console.error("Database connection established.");
+    console.log("Database connection established.");
 
     if (type === "charge.succeeded") {
       const charge = data as Stripe.Charge;
       const meta = charge.metadata as Stripe.Metadata;
+
+      console.log("Charge metadata:", meta);
 
       const orderId = meta?.orderId;
 
@@ -50,22 +53,32 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
         return;
       }
 
-      console.error("Updating order:", order);
+      // Log current order status
+      console.log("Current order status:", order.isPaid);
 
+      // Update order status
       order.isPaid = true;
       order.paidAt = new Date();
 
-      await order.save();
-      console.error(`Order updated successfully: ${orderId}`);
+      // Log updated order status
+      console.log("Updated order:", order);
 
       try {
+        await order.save();
+        console.log(`Order updated successfully: ${orderId}`);
+      } catch (err) {
+        console.error("Error saving order:", err);
+      }
+
+      // Send purchase receipt email
+      try {
         await sendPurchaseReceipt({ order });
-        console.error("Purchase receipt sent successfully.");
+        console.log("Purchase receipt sent successfully.");
       } catch (err) {
         console.error("Error sending purchase receipt:", err);
       }
     } else {
-      console.error(`Unhandled event type: ${type}`);
+      console.log(`Unhandled event type: ${type}`);
     }
   } catch (err) {
     console.error("Error processing event:", err);
