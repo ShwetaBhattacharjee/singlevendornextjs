@@ -53,22 +53,21 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
         return;
       }
 
-      // Log current order status
-      console.log("Current order status:", order.isPaid);
+      // Log the entire order object to verify its fields
+      console.log("Fetched order:", order);
 
       // Update order status
       order.isPaid = true;
       order.paidAt = new Date();
 
-      // Log updated order status
+      // Log the updated order before saving
       console.log("Updated order:", order);
 
       try {
-        // Attempt to save the updated order
-        await order.save();
-        console.log("Order saved:", order);
+        const savedOrder = await order.save(); // Save the order and log the result
+        console.log("Saved order:", savedOrder);
 
-        // Fetch the order again to confirm the update
+        // Fetch the order again to check if changes were applied
         const updatedOrder = await Order.findById(orderId);
         console.log("Updated order status after save:", updatedOrder?.isPaid);
       } catch (err) {
