@@ -38,8 +38,6 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
       const meta = charge.metadata as Stripe.Metadata;
 
       const orderId = meta?.orderId;
-      const email = charge.billing_details?.email || "No email provided";
-      const pricePaidInCents = charge.amount;
 
       if (!orderId) {
         console.error("Order ID missing in metadata.");
