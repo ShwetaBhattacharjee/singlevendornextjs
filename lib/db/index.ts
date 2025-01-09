@@ -1,8 +1,12 @@
 import mongoose, { Connection } from "mongoose";
 
 // Cache for MongoDB connection
-const cached: { conn: Connection | null; promise: Promise<typeof mongoose> | null } =
-  (global as any).mongoose || { conn: null, promise: null };
+interface CachedConnection {
+  conn: Connection | null;
+  promise: Promise<typeof mongoose> | null;
+}
+
+const cached: CachedConnection = (global as any).mongoose || { conn: null, promise: null };
 
 export const connectToDatabase = async (MONGODB_URI = process.env.MONGODB_URI) => {
   if (cached.conn) return cached.conn;
