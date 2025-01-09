@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
 
 async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   try {
-    console.log("Connecting to the database...");
     await connectToDatabase();
     console.log("Database connection established.");
 
@@ -38,9 +37,9 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
       const charge = data as Stripe.Charge;
       const meta = charge.metadata as Stripe.Metadata;
 
-      console.log("Charge metadata:", meta);
-
       const orderId = meta?.orderId;
+      const email = charge.billing_details?.email || "No email provided";
+      const pricePaidInCents = charge.amount;
 
       if (!orderId) {
         console.error("Order ID missing in metadata.");
@@ -53,24 +52,14 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
         return;
       }
 
-      // Log current order status
-      console.log("Current order status:", order.isPaid);
+      console.log("Updating order:", order);
 
-      // Update order status
       order.isPaid = true;
       order.paidAt = new Date();
 
-      // Log updated order status
-      console.log("Updated order:", order);
+      await order.save();
+      console.log(`Order updated successfully: ${orderId}`);
 
-      try {
-        await order.save();
-        console.log(`Order updated successfully: ${orderId}`);
-      } catch (err) {
-        console.error("Error saving order:", err);
-      }
-
-      // Send purchase receipt email
       try {
         await sendPurchaseReceipt({ order });
         console.log("Purchase receipt sent successfully.");
