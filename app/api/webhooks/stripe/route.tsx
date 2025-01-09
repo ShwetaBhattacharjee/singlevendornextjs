@@ -55,11 +55,11 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
       email_address: email || "No email provided",
       pricePaid: (pricePaidInCents / 100).toFixed(2),
     };
-    console.log("Before saving");
+    console.error("Before saving");
     try {
-      console.log("Attempting to save order...");
+      console.error("Attempting to save order...");
       await order.save();
-      console.log("Order saved successfully");
+      console.error("Order saved successfully");
     } catch (err) {
       console.error("Error saving order:", err);
     }
