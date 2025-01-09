@@ -56,23 +56,23 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
       // Log current order status
       console.log("Current order status:", order.isPaid);
 
-      // Update order status using findOneAndUpdate for atomic update
-      const updatedOrder = await Order.findOneAndUpdate(
-        { _id: orderId },
-        { $set: { isPaid: true, paidAt: new Date() } },
-        { new: true }
-      );
+      // Update order status
+      order.isPaid = true;
+      order.paidAt = new Date();
 
-      if (!updatedOrder) {
-        console.error(`Failed to update order with ID: ${orderId}`);
-        return;
+      // Log updated order status
+      console.log("Updated order:", order);
+
+      try {
+        await order.save();
+        console.log(`Order updated successfully: ${orderId}`);
+      } catch (err) {
+        console.error("Error saving order:", err);
       }
-
-      console.log("Updated order:", updatedOrder);
 
       // Send purchase receipt email
       try {
-        await sendPurchaseReceipt({ order: updatedOrder });
+        await sendPurchaseReceipt({ order });
         console.log("Purchase receipt sent successfully.");
       } catch (err) {
         console.error("Error sending purchase receipt:", err);
