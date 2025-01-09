@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     return new NextResponse("Webhook Error", { status: 400 });
   }
 
-  console.log("Received Stripe event:", event.type);
+  console.error("Received Stripe event:", event.type);
 
   // Acknowledge Stripe immediately
   processEventAsync(event.type, event.data.object);
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   try {
     await connectToDatabase();
-    console.log("Database connection established.");
+    console.error("Database connection established.");
 
     if (type === "charge.succeeded") {
       const charge = data as Stripe.Charge;
@@ -50,22 +50,22 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
         return;
       }
 
-      console.log("Updating order:", order);
+      console.error("Updating order:", order);
 
       order.isPaid = true;
       order.paidAt = new Date();
 
       await order.save();
-      console.log(`Order updated successfully: ${orderId}`);
+      console.error(`Order updated successfully: ${orderId}`);
 
       try {
         await sendPurchaseReceipt({ order });
-        console.log("Purchase receipt sent successfully.");
+        console.error("Purchase receipt sent successfully.");
       } catch (err) {
         console.error("Error sending purchase receipt:", err);
       }
     } else {
-      console.log(`Unhandled event type: ${type}`);
+      console.error(`Unhandled event type: ${type}`);
     }
   } catch (err) {
     console.error("Error processing event:", err);
