@@ -1,31 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
-
-import { sendPurchaseReceipt } from "@/emails";
-import Order from "@/lib/db/models/order.model";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
-
-export async function POST(req: NextRequest) {
-  let event: Stripe.Event;
-
-  try {
-    event = stripe.webhooks.constructEvent(
-      await req.text(),
-      req.headers.get("stripe-signature") as string,
-      process.env.STRIPE_WEBHOOK_SECRET as string
-    );
-  } catch (err) {
-    console.error("Webhook signature verification failed:", err);
-    return new NextResponse("Webhook Error", { status: 400 });
-  }
-
-  console.log(event);
-  // Acknowledge Stripe immediately
-  processEventAsync(event.type, event.data.object); // Offload actual processing
-  return new NextResponse("Received", { status: 200 });
-}
-
 async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
   if (type === "charge.succeeded") {
     const charge = data as Stripe.Charge;
@@ -40,33 +12,39 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
       return;
     }
 
-    const order = await Order.findById(orderId).populate("user email");
-    if (!order) {
-      console.error("Order not found:", orderId);
-      return;
-    }
-
-    // Update order status
-    order.isPaid = true;
-    order.paidAt = new Date();
-    order.paymentResult = {
-      id: charge.id,
-      status: "COMPLETED",
-      email_address: email || "No email provided",
-      pricePaid: (pricePaidInCents / 100).toFixed(2),
-    };
-    console.log("Before saving");
-    await order.save();
-
-    // Send purchase receipt email
     try {
-      console.log("Before sending mail");
-      await sendPurchaseReceipt({ order });
-    } catch (err) {
-      console.error("Failed to send email receipt:", err);
-    }
+      const order = await Order.findById(orderId).populate("user email");
+      if (!order) {
+        console.error("Order not found:", orderId);
+        return;
+      }
 
-    console.log("Order updated and receipt sent:", orderId);
+      if (order.isPaid) {
+        console.log("Order already marked as paid:", orderId);
+        return; // Avoid processing duplicate events
+      }
+
+      // Update order status
+      order.isPaid = true;
+      order.paidAt = new Date();
+      order.paymentResult = {
+        id: charge.id,
+        status: "COMPLETED",
+        email_address: email || "No email provided",
+        pricePaid: (pricePaidInCents / 100).toFixed(2),
+      };
+
+      console.log("Saving order status...");
+      await order.save();
+
+      // Send purchase receipt email
+      console.log("Sending purchase receipt email...");
+      await sendPurchaseReceipt({ order });
+
+      console.log("Order updated and receipt sent:", orderId);
+    } catch (err) {
+      console.error("Error processing charge.succeeded event:", err);
+    }
   } else {
     console.log(`Unhandled event type: ${type}`);
   }
