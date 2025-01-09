@@ -1,12 +1,11 @@
 import mongoose, { Connection } from "mongoose";
 
-// Cache for MongoDB connection
-interface CachedConnection {
-  conn: Connection | null;
-  promise: Promise<typeof mongoose> | null;
+// Type the global variable directly
+if (typeof global.mongoose === "undefined") {
+  global.mongoose = { conn: null, promise: null };
 }
 
-const cached: CachedConnection = (global as any).mongoose || { conn: null, promise: null };
+const cached = global.mongoose as { conn: Connection | null; promise: Promise<typeof mongoose> | null };
 
 export const connectToDatabase = async (MONGODB_URI = process.env.MONGODB_URI) => {
   if (cached.conn) return cached.conn;
