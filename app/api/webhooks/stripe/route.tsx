@@ -64,8 +64,13 @@ async function processEventAsync(type: string, data: Stripe.Event.Data.Object) {
       console.log("Updated order:", order);
 
       try {
+        // Attempt to save the updated order
         await order.save();
-        console.log(`Order updated successfully: ${orderId}`);
+        console.log("Order saved:", order);
+
+        // Fetch the order again to confirm the update
+        const updatedOrder = await Order.findById(orderId);
+        console.log("Updated order status after save:", updatedOrder?.isPaid);
       } catch (err) {
         console.error("Error saving order:", err);
       }
