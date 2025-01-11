@@ -9,18 +9,6 @@ import { notFound } from "next/navigation";
 import { getSetting } from "@/lib/actions/setting.actions";
 import { cookies } from "next/headers";
 
-// Import fonts using next/font/local and update the path to point to public/fonts/
-const geistSans = localFont({
-  src: "/fonts/GeistVF.woff", // Use `/fonts/` path
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "/fonts/GeistMonoVF.woff", // Use `/fonts/` path
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
-
 export async function generateMetadata() {
   const {
     site: { slogan, name, description, url },
@@ -59,9 +47,7 @@ export default async function AppLayout({
       dir={getDirection(locale) === "rtl" ? "rtl" : "ltr"}
       suppressHydrationWarning
     >
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientProviders setting={{ ...setting, currency }}>
             {children}
