@@ -1,3 +1,4 @@
+import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import ClientProviders from "@/components/shared/client-providers";
 import { getDirection } from "@/i18n-config";
@@ -7,7 +8,21 @@ import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { getSetting } from "@/lib/actions/setting.actions";
 import { cookies } from "next/headers";
-/*shweta*/
+
+// Define Geist Sans with an array of weight values
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"], // Array of available weights
+});
+
+// Define Geist Mono with an array of weight values
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"], // Array of available weights
+});
+
 export async function generateMetadata() {
   const {
     site: { slogan, name, description, url },
@@ -35,7 +50,8 @@ export default async function AppLayout({
 
   const { locale } = await params;
   // Ensure that the incoming `locale` is valid
-  if (!routing.locales.includes(locale)) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (!routing.locales.includes(locale as any)) {
     notFound();
   }
   const messages = await getMessages();
@@ -46,7 +62,9 @@ export default async function AppLayout({
       dir={getDirection(locale) === "rtl" ? "rtl" : "ltr"}
       suppressHydrationWarning
     >
-      <body className="antialiased">
+      <body
+        className={`min-h-screen ${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientProviders setting={{ ...setting, currency }}>
             {children}
