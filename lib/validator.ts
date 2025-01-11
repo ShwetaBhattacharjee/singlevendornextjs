@@ -33,15 +33,10 @@ export const ProductInputSchema = z.object({
   category: z.string().min(1, 'Category is required'),
   images: z.array(z.string()).min(1, 'Product must have at least one image'),
   brand: z.string().min(1, 'Brand is required'),
-  model: z.string().min(1, 'Model is required'),
   description: z.string().min(1, 'Description is required'),
   isPublished: z.boolean(),
   price: Price('Price'),
   listPrice: Price('List price'),
-  carno: z.coerce
-  .number()
-  .int()
-  .nonnegative('CarNo must be a non-negative number'),
   countInStock: z.coerce
     .number()
     .int()
