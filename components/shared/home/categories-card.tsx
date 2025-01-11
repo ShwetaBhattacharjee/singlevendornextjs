@@ -2,6 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image"; // Import Next.js Image component
 
 type CategoryItem = {
   name: string;
@@ -30,9 +31,11 @@ export default function CategoriesCard({ categories }: CategoriesCardProps) {
             <div className="flex gap-6 h-full">
               {/* Left Side: Image */}
               <div className="flex-shrink-0 w-1/3 p-2 flex justify-center items-center border border-gray-300 rounded-lg overflow-hidden h-full">
-                <img
+                <Image
                   src={category.image} // Using the image field directly
                   alt={`Image of ${category.name}`}
+                  width={100} // Provide a default width
+                  height={100} // Provide a default height
                   className="object-cover w-full h-full transition-transform duration-300 ease-in-out group-hover:scale-110"
                 />
               </div>
