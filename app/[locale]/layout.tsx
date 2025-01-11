@@ -7,7 +7,7 @@ import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { getSetting } from "@/lib/actions/setting.actions";
 import { cookies } from "next/headers";
-
+/*shweta*/
 export async function generateMetadata() {
   const {
     site: { slogan, name, description, url },
