@@ -3,6 +3,7 @@ import withNextIntl from 'next-intl/plugin';
 
 const nextConfig: NextConfig = withNextIntl()({
   /* config options here */
+  transpilePackages: ['geist'],
   images: {
     remotePatterns: [
       {
