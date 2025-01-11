@@ -31,7 +31,10 @@
     "Help": "Help",
     "Site Menu": "Site Menu",
     "Subtotal": "Subtotal",
-    "Go to cart": "Go to cart"
+    "Go to cart": "Go to cart",
+    "Headlights_Lighting": "Headlights & Lighting",
+"Interior_Accessories": "Interior Accessories",
+"Tires_Wheels": "Tires & Wheels"
   },
   "Home": {
     "Categories to explore": "Categories to explore",
@@ -45,15 +48,22 @@
     "Best Selling Products": "Best Selling Products",
     "Related to items that you've viewed": "Related to items that you've viewed",
     "Your browsing history": "Your browsing history",
-    "Most Popular Shoes For Sale": "Most Popular Shoes For Sale",
-    "Best Sellers in T-Shirts": "Best Sellers in T-Shirts",
-    "Best Deals on Wrist Watches": "Best Deals on Wrist Watches"
+    "Find the Perfect Fit for Your Vehicle": "Find the Perfect Fit for Your Vehicle",
+    "Drive with Confidence, Powered by Precision": "Drive with Confidence, Powered by Precision",
+    "Upgrade Your Ride, Enhance Your Journey": "Upgrade Your Ride, Enhance Your Journey",
+    
+      "Unleash the Power of Your Ride": "Unleash the Power of Your Ride",
+      "Explore a vast selection of high-quality car parts, accessories, and upgrades for every make and model": "Explore a vast selection of high-quality car parts, accessories, and upgrades for every make and model"
+    
+    
   },
   "Product": {
     "Added to Cart": "Added to Cart",
     "Go to Cart": "Go to Cart",
     "Deleted User": "Deleted User",
     "Brand": "Brand",
+    "Model": "Model",
+    "CarNo": "Numéro de voiture",
     "Limited time deal": "Limited time deal",
     "Was": "Was",
     "List price": "List price",

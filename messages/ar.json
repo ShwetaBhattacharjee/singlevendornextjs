@@ -31,7 +31,10 @@
     "Help": "مساعدة",
     "Site Menu": "قائمة الموقع",
     "Subtotal": "المجموع الفرعي",
-    "Go to cart": "اذهب إلى السلة"
+    "Go to cart": "اذهب إلى السلة",
+    "Headlights_Lighting": "المصابيح الأمامية والإضاءة",
+  "Interior_Accessories": "إكسسوارات داخلية",
+   "Tires_Wheels": "الإطارات والعجلات"
   },
   "Home": {
     "Categories to explore": "فئات للاستكشاف",
@@ -45,15 +48,21 @@
     "Best Selling Products": "المنتجات الأكثر مبيعًا",
     "Related to items that you've viewed": "ذات صلة بالعناصر التي عرضتها",
     "Your browsing history": "سجل التصفح الخاص بك",
-    "Most Popular Shoes For Sale": "الأحذية الأكثر شعبية للبيع",
-    "Best Sellers in T-Shirts": "الأكثر مبيعًا في التيشيرتات",
-    "Best Deals on Wrist Watches": "أفضل العروض على ساعات المعصم"
+   "Find the Perfect Fit for Your Vehicle": "اعثر على الملاءمة المثالية لسيارتك",
+  "Drive with Confidence, Powered by Precision": "قد بثقة مدعومة بالدقة",
+  "Upgrade Your Ride, Enhance Your Journey": "طور سيارتك، عزز رحلتك",
+   "Unleash the Power of Your Ride": "افتح قوة رحلتك",
+    "Explore a vast selection of high-quality car parts, accessories, and upgrades for every make and model": "استكشف مجموعة واسعة من قطع غيار السيارات عالية الجودة، والإكسسوارات، والترقيات لكل طراز وموديل"
+     
+  
   },
   "Product": {
     "Added to Cart": "أضيف إلى السلة",
     "Go to Cart": "اذهب إلى السلة",
     "Deleted User": "مستخدم محذوف",
     "Brand": "العلامة التجارية",
+    "Model": "الطراز",
+    "CarNo": "رقم السيارة",
     "Limited time deal": "صفقة محدودة الوقت",
     "Was": "كان",
     "List price": "سعر القائمة",

@@ -1,5 +1,5 @@
-import type { NextConfig } from 'next'
-import withNextIntl from 'next-intl/plugin'
+import type { NextConfig } from 'next';
+import withNextIntl from 'next-intl/plugin';
 
 const nextConfig: NextConfig = withNextIntl()({
   /* config options here */
@@ -10,8 +10,13 @@ const nextConfig: NextConfig = withNextIntl()({
         hostname: 'utfs.io',
         port: '',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com', // Add Cloudinary here
+        port: '',
+      },
     ],
   },
-})
+});
 
-export default nextConfig
+export default nextConfig;

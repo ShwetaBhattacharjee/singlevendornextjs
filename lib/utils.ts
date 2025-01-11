@@ -39,10 +39,12 @@ export const formatNumberWithDecimal = (num: number): string => {
 export const toSlug = (text: string): string =>
   text
     .toLowerCase()
-    .replace(/[^\w\s-]+/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .replace(/-+/g, '-')
+    .replace(/[^\w\s&-]+/g, '') // Allow ampersand & in the slug, remove other non-word characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/&+/g, 'and') // Replace "&" with "and" (for better SEO and readability)
+    .replace(/^-+|-+$/g, '') // Remove leading and trailing hyphens
+    .replace(/-+/g, '-'); // Collapse multiple hyphens into a single hyphen
+
 
 const CURRENCY_FORMATTER = new Intl.NumberFormat('en-US', {
   currency: 'USD',

@@ -31,7 +31,10 @@
     "Help": "Aide",
     "Site Menu": "Menu du site",
     "Subtotal": "Sous-total",
-    "Go to cart": "Aller au panier"
+    "Go to cart": "Aller au panier",
+    "Headlights_Lighting": "Phares & Éclairage",
+   "Interior_Accessories": "Accessoires Intérieurs",
+   "Tires_Wheels": "Pneus & Roues"
   },
   "Home": {
     "Categories to explore": "Catégories à explorer",
@@ -45,15 +48,22 @@
     "Best Selling Products": "Produits les plus vendus",
     "Related to items that you've viewed": "Lié aux articles que vous avez consultés",
     "Your browsing history": "Votre historique de navigation",
-    "Most Popular Shoes For Sale": "Chaussures les plus populaires à vendre",
-    "Best Sellers in T-Shirts": "Meilleures ventes de t-shirts",
-    "Best Deals on Wrist Watches": "Meilleures offres sur les montres-bracelets"
+    "Find the Perfect Fit for Your Vehicle": "Trouvez l'ajustement parfait pour votre véhicule",
+  "Drive with Confidence, Powered by Precision": "Conduisez avec confiance, propulsé par la précision",
+  "Upgrade Your Ride, Enhance Your Journey": "Améliorez votre véhicule, améliorez votre voyage",
+  
+    "Unleash the Power of Your Ride": "Libérez la puissance de votre conduite",
+    "Explore a vast selection of high-quality car parts, accessories, and upgrades for every make and model": "Explorez une vaste sélection de pièces automobiles de haute qualité, d'accessoires et de mises à niveau pour chaque marque et modèle"
+   
+  
   },
   "Product": {
     "Added to Cart": "Ajouté au panier",
     "Go to Cart": "Aller au panier",
     "Deleted User": "Utilisateur supprimé",
     "Brand": "Marque",
+    "Model": "Modèle",
+    "CarNo": "Car Number",
     "Limited time deal": "Offre à durée limitée",
     "Was": "Était",
     "List price": "Prix courant",
