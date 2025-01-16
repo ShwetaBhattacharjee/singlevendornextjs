@@ -36,7 +36,7 @@ export async function generateMetadata() {
     metadataBase: new URL(url),
     // Adding favicon and logo for Google indexing and social media sharing
     icons: {
-      icon: "/icons/logo.png", // Path to the logo image in your public folder
+      icon: "/icons/logo.jpg", // Path to the logo image in your public folder
     },
     openGraph: {
       title: name,
