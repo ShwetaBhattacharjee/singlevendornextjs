@@ -4,13 +4,13 @@
 
 body {
   font-family: var(--font-roboto, Arial, sans-serif);
-  font-size: 14px; /* Smaller base font size */
+  font-size: 12px; /* Smaller base font size */
   line-height: 1.6;
 }
 
 code, pre {
   font-family: var(--font-roboto-mono, Courier, monospace);
-  font-size: 12px; /* Smaller font for code blocks */
+  font-size: 11px; /* Smaller font for code blocks */
   line-height: 1.5;
 }
 
