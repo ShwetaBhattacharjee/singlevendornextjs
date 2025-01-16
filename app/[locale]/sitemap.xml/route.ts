@@ -1,4 +1,4 @@
-const BASE_URL = "https://hdpartz-seven.vercel.app/";
+const BASE_URL = "https://www.hdpartz.com";
 
 function generateSiteMap(): string {
   return `<?xml version="1.0" encoding="UTF-8"?>

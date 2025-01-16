@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 <<<<<<< HEAD
-Sitemap: https://hdpartz-seven.vercel.app/sitemap.xml 
+Sitemap: https://www.hdpartz.com/sitemap.xml 
 =======
-Sitemap: https://hdpartz-seven.vercel.app/sitemap.xml 
+Sitemap: https://www.hdpartz.com/sitemap.xml 
 >>>>>>> 30d2c6c007ac463e5edf65475bf2863dc797774a
