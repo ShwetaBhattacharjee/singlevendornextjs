@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Roboto, Roboto_Mono } from "next/font/google";
 import "../globals.css";
 import ClientProviders from "@/components/shared/client-providers";
 import { getDirection } from "@/i18n-config";
@@ -9,14 +9,15 @@ import { notFound } from "next/navigation";
 import { getSetting } from "@/lib/actions/setting.actions";
 import { cookies } from "next/headers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const roboto = Roboto({
+  variable: "--font-roboto",
   subsets: ["latin"],
   display: "swap",
+  weight: ["400", "700"],
 });
-/*shweta*/
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -47,8 +48,7 @@ export default async function AppLayout({
   const currency = currencyCookie ? currencyCookie.value : "USD";
 
   const { locale } = await params;
-  // Ensure that the incoming `locale` is valid
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   if (!routing.locales.includes(locale as any)) {
     notFound();
   }
@@ -61,10 +61,16 @@ export default async function AppLayout({
       suppressHydrationWarning
     >
       <body
-        className={`min-h-screen ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`min-h-screen ${roboto.variable} ${robotoMono.variable} antialiased`}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientProviders setting={{ ...setting, currency }}>
+            <h1 style={{ fontFamily: "var(--font-roboto)" }}>
+              Heading Example
+            </h1>
+            <p style={{ fontFamily: "var(--font-roboto-mono)" }}>
+              Body Example
+            </p>
             {children}
           </ClientProviders>
         </NextIntlClientProvider>

@@ -3,11 +3,25 @@
 @tailwind utilities;
 
 body {
-  
-  font-family: var(--font-geist-sans, sans-serif);
+  font-family: var(--font-roboto, Arial, sans-serif);
+  font-size: 14px; /* Smaller base font size */
+  line-height: 1.6;
 }
+
 code, pre {
-  font-family: var(--font-geist-mono, monospace);
+  font-family: var(--font-roboto-mono, Courier, monospace);
+  font-size: 12px; /* Smaller font for code blocks */
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 20px; /* Smaller headings */
+  font-weight: 700; /* Bold weight */
+}
+
+p {
+  font-size: 14px;
+  margin-bottom: 8px;
 }
 
 @layer base {
