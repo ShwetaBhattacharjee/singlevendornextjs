@@ -27,8 +27,6 @@ export async function generateMetadata() {
   const {
     site: { slogan, name, description, url },
   } = await getSetting();
-
-  // Ensure the image paths and metadata are correct for social media sharing
   return {
     title: {
       template: `%s | ${name}`,
@@ -36,16 +34,13 @@ export async function generateMetadata() {
     },
     description: description,
     metadataBase: new URL(url),
-    icons: {
-      icon: "/icons/logo.jpg", // Path to the logo image in your public folder (favicon)
-    },
     openGraph: {
       title: name,
       description: description,
       url: url,
       images: [
         {
-          url: "/icons/logo.png", // Path to the logo image for OpenGraph
+          url: "/icons/logo.png", // Path to the logo image
           width: 1200,
           height: 630,
           alt: `${name} logo`,
