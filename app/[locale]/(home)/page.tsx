@@ -34,7 +34,7 @@ export default async function HomePage() {
   // Fetch and process categories
   const categories = (await getAllCategories()).slice(0, 4).map((category) => ({
     name: category,
-    image: `/images/${toSlug(category)}.png`, // Path to category image
+    image: `/images/${toSlug(category)}.jpg`, // Path to category image
     href: `/search?category=${category}`, // Link to the category page
   }));
 
