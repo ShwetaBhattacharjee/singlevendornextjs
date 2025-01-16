@@ -23,10 +23,12 @@ const robotoMono = Roboto_Mono({
   display: "swap",
 });
 
+// Function to generate metadata for SEO and social media sharing
 export async function generateMetadata() {
   const {
     site: { slogan, name, description, url },
   } = await getSetting();
+
   return {
     title: {
       template: `%s | ${name}`,
@@ -36,7 +38,7 @@ export async function generateMetadata() {
     metadataBase: new URL(url),
     // Adding favicon and logo for Google indexing and social media sharing
     icons: {
-      icon: "/icons/logo.jpg", // Path to the logo image in your public folder
+      icon: "/icons/logo.jpg", // Path to the logo image in your public folder (favicon)
     },
     openGraph: {
       title: name,
@@ -44,7 +46,7 @@ export async function generateMetadata() {
       url: url,
       images: [
         {
-          url: "/icons/logo.png", // Path to the logo image
+          url: "/icons/logo.png", // Path to the logo image for OpenGraph
           width: 1200,
           height: 630,
           alt: `${name} logo`,
@@ -55,11 +57,12 @@ export async function generateMetadata() {
       card: "summary_large_image",
       title: name,
       description: description,
-      images: ["/icons/logo.png"], // Path to the logo image
+      images: ["/icons/logo.png"], // Path to the logo image for Twitter card
     },
   };
 }
 
+// Main layout component
 export default async function AppLayout({
   params,
   children,
@@ -71,11 +74,13 @@ export default async function AppLayout({
   const currencyCookie = (await cookies()).get("currency");
   const currency = currencyCookie ? currencyCookie.value : "USD";
 
-  const { locale } = await params;
+  const { locale } = params;
 
+  // Redirect to 404 page if locale is not valid
   if (!routing.locales.includes(locale as string)) {
     notFound();
   }
+
   const messages = await getMessages();
 
   return (
