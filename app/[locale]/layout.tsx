@@ -23,12 +23,12 @@ const robotoMono = Roboto_Mono({
   display: "swap",
 });
 
-// Function to generate metadata for SEO and social media sharing
 export async function generateMetadata() {
   const {
     site: { slogan, name, description, url },
   } = await getSetting();
 
+  // Ensure the image paths and metadata are correct for social media sharing
   return {
     title: {
       template: `%s | ${name}`,
@@ -36,7 +36,6 @@ export async function generateMetadata() {
     },
     description: description,
     metadataBase: new URL(url),
-    // Adding favicon and logo for Google indexing and social media sharing
     icons: {
       icon: "/icons/logo.jpg", // Path to the logo image in your public folder (favicon)
     },
@@ -62,7 +61,6 @@ export async function generateMetadata() {
   };
 }
 
-// Main layout component
 export default async function AppLayout({
   params,
   children,
@@ -74,13 +72,11 @@ export default async function AppLayout({
   const currencyCookie = (await cookies()).get("currency");
   const currency = currencyCookie ? currencyCookie.value : "USD";
 
-  const { locale } = params;
+  const { locale } = await params;
 
-  // Redirect to 404 page if locale is not valid
   if (!routing.locales.includes(locale as string)) {
     notFound();
   }
-
   const messages = await getMessages();
 
   return (
