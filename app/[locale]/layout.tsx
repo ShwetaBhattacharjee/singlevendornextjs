@@ -65,12 +65,6 @@ export default async function AppLayout({
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientProviders setting={{ ...setting, currency }}>
-            <h1 style={{ fontFamily: "var(--font-roboto)" }}>
-              Heading Example
-            </h1>
-            <p style={{ fontFamily: "var(--font-roboto-mono)" }}>
-              Body Example
-            </p>
             {children}
           </ClientProviders>
         </NextIntlClientProvider>

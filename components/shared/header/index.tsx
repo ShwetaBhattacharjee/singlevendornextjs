@@ -82,7 +82,7 @@ export default async function Header() {
         {/* Contact information on the right side */}
         <div className="flex items-center gap-4 ml-auto">
           <span className="hidden md:block">
-            Need help? Call us:{" "}
+            Call us:{" "}
             <a
               href="tel:+971502487319"
               className="text-blue-600 hover:underline"
