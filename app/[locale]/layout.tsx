@@ -49,7 +49,7 @@ export default async function AppLayout({
 
   const { locale } = await params;
 
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale as string)) {
     notFound();
   }
   const messages = await getMessages();
