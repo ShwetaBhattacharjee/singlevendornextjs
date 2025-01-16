@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import { getSetting } from "@/lib/actions/setting.actions";
 import { cookies } from "next/headers";
 
+// Importing fonts
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
@@ -33,6 +34,29 @@ export async function generateMetadata() {
     },
     description: description,
     metadataBase: new URL(url),
+    // Adding favicon and logo for Google indexing and social media sharing
+    icons: {
+      icon: "/icons/logo.png", // Path to the logo image in your public folder
+    },
+    openGraph: {
+      title: name,
+      description: description,
+      url: url,
+      images: [
+        {
+          url: "/icons/logo.png", // Path to the logo image
+          width: 1200,
+          height: 630,
+          alt: `${name} logo`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: name,
+      description: description,
+      images: ["/icons/logo.png"], // Path to the logo image
+    },
   };
 }
 
