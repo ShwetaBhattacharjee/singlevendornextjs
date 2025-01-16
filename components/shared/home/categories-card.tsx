@@ -30,12 +30,12 @@ export default function CategoriesCard({ categories }: CategoriesCardProps) {
           >
             <div className="flex flex-col sm:flex-row gap-6 h-full">
               {/* Left Side: Image */}
-              <div className="flex-shrink-0 w-full sm:w-1/3 p-2 flex justify-center items-center border border-gray-300 rounded-lg overflow-hidden h-full">
+              <div className="flex-shrink-0 w-full sm:w-1/3 p-2 flex justify-center items-center border border-gray-300 rounded-lg overflow-hidden h-auto">
                 <Image
                   src={category.image} // Using the image field directly
                   alt={`Image of ${category.name}`}
                   width={200} // Use larger width for larger screens
-                  height={200} // Use larger height for larger screens
+                  height={100} // Set a fixed height for the image on smaller screens
                   className="object-cover w-full h-full transition-transform duration-300 ease-in-out group-hover:scale-110"
                 />
               </div>
