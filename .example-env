@@ -26,3 +26,146 @@ PAYPAL_APP_SECRET=
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
+
+
+
+
+#Direction to get the api keys:
+
+Here’s a step-by-step guide on how to obtain the necessary credentials for the variables in your configuration. Each section will explain how to get the credentials for different services.
+
+### **1. NEXT_PUBLIC_APP_NAME & NEXT_PUBLIC_APP_DESCRIPTION**
+These are custom variables you can set yourself.
+
+- **APP_NAME**: Set a name for your app. Example: `HDPartz`.
+- **APP_DESCRIPTION**: Write a brief description of your app. Example: `HD Partz delivers premium heavy-duty auto and machinery components built for strength, reliability, and unmatched performance.`
+
+These are not sensitive credentials, and you can set them manually in your `.env` file.
+
+---
+
+### **2. NEXT_PUBLIC_SERVER_URL**
+- **SERVER URL**: This is the base URL where your app is hosted. For example, if you are using Vercel or a similar platform, the URL might look like `https://hdpartz-seven.vercel.app/`.
+  - **Action**: Deploy your app to a platform like Vercel or Heroku and copy the URL once it's live.
+
+---
+
+### **3. MONGODB_URI**
+To get the MongoDB URI, you need to create a MongoDB Atlas account:
+
+- **Create an account**: Sign up at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
+- **Create a cluster**: Once logged in, create a cluster. You can select the free tier to avoid costs.
+- **Create a database user**: Create a user with access to the database.
+- **Get URI**: In the cluster, go to "Connect" > "Connect Your Application" > Select your connection version (e.g., Node.js), and copy the URI. Replace the default `username` and `password` with your MongoDB username and password.
+  
+Example URI format:
+```
+mongodb+srv://<username>:<password>@cluster0.rgj2s.mongodb.net/?retryWrites=true&w=majority
+```
+
+---
+
+### **4. AUTH_SECRET**
+`AUTH_SECRET` is a secret used by authentication services, such as Auth.js.
+
+- **Generate a secret**: To generate a secret, you can use the `npx auth secret` command if you're using Auth.js.
+  ```bash
+  npx auth secret
+  ```
+
+This will generate a secure, unique secret for your app, which you can copy and use.
+
+---
+
+### **5. AUTH_GOOGLE_ID & AUTH_GOOGLE_SECRET**
+To get these credentials, you need to create a Google OAuth client:
+
+- **Create a project**: Go to the [Google Cloud Console](https://console.cloud.google.com/), create a new project, and enable the "Google Identity" API.
+- **Create OAuth credentials**: In the Google Cloud Console, navigate to `APIs & Services` > `Credentials`. Then click on `Create Credentials` After creating the credentials, you’ll get the **Client ID** and **Client Secret**.
+- **Action**: Copy the `AUTH_GOOGLE_ID` (Client ID) and `AUTH_GOOGLE_SECRET` (Client Secret) to your `.env` file.
+
+---
+
+### **6. RESEND_API_KEY, SENDER_EMAIL & SENDER_NAME**
+For **Resend**, which is used for email delivery, sign up on [Resend](https://resend.com/) to get your API key.
+
+- **API Key**: Once logged in, go to the dashboard and generate a new API key.
+- **Sender Info**: Set up the sender email (e.g., `onboarding@resend.dev`) and sender name (e.g., `support`).
+
+---
+
+### **7. NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME & NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET**
+Cloudinary is a media management platform for images and videos.
+
+- **Create an account**: Go to [Cloudinary](https://cloudinary.com/), and sign up for a free account.
+- **Get Credentials**:
+  1. After logging in, go to the `Dashboard`.
+  2. Copy the **Cloud Name** and set it as `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`.
+  3. Go to `Settings` > `Upload` > `Upload Presets` and create a new preset and it should be unassigned. Copy the **Upload Preset** and set it as `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`.
+
+---
+
+### **8. PAYPAL_API_URL, PAYPAL_CLIENT_ID & PAYPAL_APP_SECRET**
+To get your PayPal credentials:
+
+- **Create a PayPal Developer Account**: Go to [PayPal Developer](https://developer.paypal.com/).
+- **Create an app**: In your PayPal Developer account, create a new app under the `My Apps & Credentials` section.
+- **Get credentials**: After creating the app, you’ll get the **Client ID** and **App Secret**.
+  - Set **PAYPAL_API_URL** as the sandbox URL: `https://api-m.sandbox.paypal.com`.
+  - Set the **Client ID** and **App Secret** accordingly.
+
+---
+
+### **9. STRIPE_CREDENTIALS**
+To get your Stripe API keys:
+
+- **Sign up for Stripe**: Go to [Stripe](https://stripe.com/) and create an account.
+- **API Keys**: In your Stripe dashboard, go to `Developers` > `API Keys`. Copy the **Publishable Key** and **Secret Key**.
+- **Webhook Secret**: If you are using webhooks, you can generate the webhook secret by going to `Developers` > `Webhooks` and creating a new webhook endpoint.
+
+---
+
+### **10. Final `.env` Setup**
+
+After obtaining all the credentials, your `.env` file should look like this:
+
+```env
+NEXT_PUBLIC_APP_NAME=HDPartz
+NEXT_PUBLIC_APP_DESCRIPTION=HD Partz delivers premium heavy-duty auto and machinery components built for strength, reliability, and unmatched performance. From industrial vehicles to commercial fleets, we power the toughest jobs with parts that last.
+NEXT_PUBLIC_SERVER_URL=https://hdpartz-seven.vercel.app/
+
+# Database
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.rgj2s.mongodb.net/?retryWrites=true&w=majority
+
+# Auth
+AUTH_SECRET="YourGeneratedSecret"
+AUTH_GOOGLE_ID="YourGoogleClientID"
+AUTH_GOOGLE_SECRET="YourGoogleClientSecret"
+
+# Resend Email
+RESEND_API_KEY="YourResendAPIKey"
+SENDER_EMAIL="onboarding@resend.dev"
+SENDER_NAME="support"
+
+# Cloudinary
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="yourCloudName"
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET="yourUploadPreset"
+
+# PayPal
+PAYPAL_API_URL=https://api-m.sandbox.paypal.com
+PAYPAL_CLIENT_ID="YourPayPalClientID"
+PAYPAL_APP_SECRET="YourPayPalAppSecret"
+
+# Stripe
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="YourStripePublishableKey"
+STRIPE_SECRET_KEY="YourStripeSecretKey"
+STRIPE_WEBHOOK_SECRET="YourStripeWebhookSecret"
+```
+
+---
+
+### **Conclusion**
+
+With this guide, you should be able to generate and configure the credentials for all the services you're using in your app. Ensure that your `.env` file is not exposed or uploaded to version control systems like GitHub, as it contains sensitive keys and secrets.
+
+
